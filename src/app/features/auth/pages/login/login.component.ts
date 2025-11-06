@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators , FormBuilder } from '@angular/forms';
 import { AuthService } from '../../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ export class LoginComponent implements OnInit {
   otpSent = false; // controls visibility of OTP input
   email: string = '';
 
-  constructor(private fb: FormBuilder,private authService: AuthService) {}
+  constructor(private fb: FormBuilder,private authService: AuthService,private router: Router) {}
 
  ngOnInit() {
   this.loginForm = this.fb.group({
@@ -62,7 +63,7 @@ export class LoginComponent implements OnInit {
         console.log(res);
         if (res.success) {
           alert('✅ OTP Verified Successfully!');
-          // this.router.navigate(['/dashboard']); // redirect after success
+          this.router.navigate(['/dashboard']); // redirect after success
         } else {
           alert('❌ Invalid OTP. Please try again.');
         }
