@@ -5,19 +5,19 @@
 
   <nav class="sidebar-nav">
     <ul>
-      <li routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        <i class="fas fa-chart-line"></i> Dashboard
-      </li>
-      <li routerLink="/dashboard" routerLinkActive="active">
+        <li routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <i class="fas fa-chart-line"></i> Dashboard
+        </li>
+      <li routerLink="/dashboard/user"  routerLinkActive="active">
         <i class="fas fa-users"></i> Users
       </li>
-      <li routerLink="/dashboard/profile" routerLinkActive="active">
+      <li routerLink="/dashboard/account"  routerLinkActive="active" >
         <i class="fas fa-wallet"></i> Accounts
       </li>
-      <li routerLink="/dashboard/transactions" routerLinkActive="active">
+     <li routerLink="/dashboard/transaction" routerLinkActive="active">
         <i class="fas fa-exchange-alt"></i> Transactions
       </li>
-      <li routerLink="/dashboard/settings" routerLinkActive="active">
+      <li routerLink="/dashboard/settings" >
         <i class="fas fa-cog"></i> Settings
       </li>
     </ul>

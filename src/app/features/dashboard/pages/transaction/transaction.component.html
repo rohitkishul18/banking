@@ -1,0 +1,31 @@
+<div class="transaction-container">
+  <h2 class="title">
+    <i class="fas fa-money-check-alt icon"></i>
+    Transaction History
+  </h2>
+
+  <table class="transaction-table">
+    <thead>
+      <tr>
+        <th>User Name</th>
+        <th>Account No</th>
+        <th>Amount</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let txn of transactions">
+        <td>{{ txn.userName }}</td>
+        <td>{{ txn.accountNo }}</td>
+        <td>₹{{ txn.amount | number }}</td>
+        <td><span class="type" [ngClass]="txn.type.toLowerCase()">{{ txn.type }}</span></td>
+        <td>
+          <span class="status" [ngClass]="txn.status.toLowerCase()">{{ txn.status }}</span>
+        </td>
+        <td>{{ txn.date }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,38 @@
+<div class="account-container">
+  <h2 class="title">
+    <i class="fas fa-wallet icon"></i>
+    All Customer Accounts
+  </h2>
+
+  <!-- Account Table -->
+  <table class="account-table table table-dark table-hover">
+    <thead>
+      <tr>
+        <th>Account No</th>
+        <th>Holder Name</th>
+        <th>Type</th>
+        <th>Balance</th>
+        <th>Status</th>
+        <th class="text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let acc of accounts">
+        <td>{{ acc.accountNumber }}</td>
+        <td>{{ acc.holderName }}</td>
+        <td>{{ acc.type }}</td>
+        <td>₹ {{ acc.balance | number: '1.2-2' }}</td>
+        <td>
+          <span class="status" [ngClass]="acc.active ? 'active' : 'inactive'">
+            {{ acc.active ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-primary me-2">View</button>
+          <button class="btn btn-sm btn-success me-2">Edit</button>
+          <button class="btn btn-sm btn-danger">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
