@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  Chart,
-  registerables // ✅ Required for Chart.js v3+
-} from 'chart.js';
+import { Chart, registerables } from 'chart.js';
+import { DashbordService } from '../../services/dashbord.service';
 
 @Component({
   selector: 'app-home',
@@ -10,19 +8,51 @@ import {
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  totalUsers = 1500;
-  totalTransactions = 450;
-  totalLoan = 1250000;
-  activeAccounts = 860;
+  totalUsers = 0;
+  totalTransactions = 0;
+  totalLoan = 0;
+  activeAccounts = 0;
 
-  constructor() {
+  loanTrends: number[] = [];
+  transactionTrends: number[] = [];
+  loanTypeDistribution: any = {};
+
+  isLoading = true;
+  hasError = false;
+
+  constructor(private dashboardService: DashbordService) {
     Chart.register(...registerables);
   }
 
   ngOnInit(): void {
-    this.createLoanChart();
-    this.createTransactionChart();
-    this.createLoanTypeChart();
+    this.fetchDashboardData();
+  }
+
+  fetchDashboardData() {
+    this.dashboardService.fetchDashbordData().subscribe({
+      next: (data: any) => {
+        console.log('✅ Dashboard data:', data);
+        this.totalUsers = data.totalUsers;
+        this.totalTransactions = data.totalTransactions;
+        this.totalLoan = data.totalLoan;
+        this.activeAccounts = data.activeAccounts;
+
+        this.loanTrends = data.loanTrends || [];
+        this.transactionTrends = data.transactionTrends || [];
+        this.loanTypeDistribution = data.loanTypeDistribution || {};
+
+        this.createLoanChart();
+        this.createTransactionChart();
+        this.createLoanTypeChart();
+
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('❌ Error fetching dashboard data:', err);
+        this.isLoading = false;
+        this.hasError = true;
+      },
+    });
   }
 
   createLoanChart() {
@@ -32,17 +62,15 @@ export class HomeComponent implements OnInit {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
         datasets: [
           {
-            label: 'Loans Invested (₹)',
-            data: [200000, 180000, 250000, 220000, 260000, 290000],
+            label: 'Loans Distributed (₹)',
+            data: this.loanTrends,
             backgroundColor: '#00dfd8',
             borderRadius: 8,
           },
         ],
       },
       options: {
-        plugins: {
-          legend: { labels: { color: '#fff' } },
-        },
+        plugins: { legend: { labels: { color: '#fff' } } },
         scales: {
           x: { ticks: { color: '#ccc' }, grid: { color: '#222' } },
           y: { ticks: { color: '#ccc' }, grid: { color: '#222' } },
@@ -59,7 +87,7 @@ export class HomeComponent implements OnInit {
         datasets: [
           {
             label: 'Transactions',
-            data: [150, 200, 180, 250, 220, 270],
+            data: this.transactionTrends,
             borderColor: '#4f9eff',
             backgroundColor: 'rgba(79, 158, 255, 0.2)',
             tension: 0.4,
@@ -68,9 +96,7 @@ export class HomeComponent implements OnInit {
         ],
       },
       options: {
-        plugins: {
-          legend: { labels: { color: '#fff' } },
-        },
+        plugins: { legend: { labels: { color: '#fff' } } },
         scales: {
           x: { ticks: { color: '#ccc' }, grid: { color: '#222' } },
           y: { ticks: { color: '#ccc' }, grid: { color: '#222' } },
@@ -78,9 +104,6 @@ export class HomeComponent implements OnInit {
       },
     });
   }
-
-
-  // rounded chart 
 
   createLoanTypeChart() {
     new Chart('loanTypeChart', {
@@ -90,13 +113,13 @@ export class HomeComponent implements OnInit {
         datasets: [
           {
             label: 'Loan Distribution',
-            data: [400000, 250000, 350000, 250000],
-            backgroundColor: [
-              '#4ade80', // green
-              '#60a5fa', // blue
-              '#fbbf24', // yellow
-              '#f87171', // red
+            data: [
+              this.loanTypeDistribution.homeLoan || 0,
+              this.loanTypeDistribution.carLoan || 0,
+              this.loanTypeDistribution.businessLoan || 0,
+              this.loanTypeDistribution.personalLoan || 0,
             ],
+            backgroundColor: ['#4ade80', '#60a5fa', '#fbbf24', '#f87171'],
             borderWidth: 2,
             borderColor: '#1e1e2f',
             hoverOffset: 12,
@@ -104,23 +127,15 @@ export class HomeComponent implements OnInit {
         ],
       },
       options: {
-        cutout: '80%', // ✅ Rounded donut style
+        cutout: '75%',
         maintainAspectRatio: false,
         plugins: {
           legend: {
             position: 'bottom',
-            maxWidth: 100,
-            align: 'center',
-            labels: { color: '#fff', padding: 20},
+            labels: { color: '#fff', padding: 15 },
           },
         },
       },
     });
   }
-
-
-
-
-
-
 }

@@ -62,33 +62,42 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  verifyOtp() {
-    if (this.otpForm.invalid) {
-      this.showMessage('Please enter a valid 6-digit OTP.', false);
-      return;
-    }
-
-    this.loading = true;
-    this.loadingText = 'Verifying OTP...';
-    const otp = this.otpForm.value.otp;
-
-    this.authService.verifyOtp(this.email, otp).subscribe(
-      (res: any) => {
-        this.loading = false;
-        if (res.success) {
-          this.showMessage('✅ OTP Verified Successfully!', true);
-          setTimeout(() => this.router.navigate(['/dashboard']), 1000);
-        } else {
-          this.showMessage('❌ Invalid OTP. Please try again.', false);
-        }
-      },
-      (error) => {
-        this.loading = false;
-        this.showMessage('❌ Error verifying OTP. Please try again.', false);
-        console.error(error);
-      }
-    );
+ verifyOtp() {
+  if (this.otpForm.invalid) {
+    this.showMessage('Please enter a valid 6-digit OTP.', false);
+    return;
   }
+
+  this.loading = true;
+  this.loadingText = 'Verifying OTP...';
+  const otp = this.otpForm.value.otp;
+
+  this.authService.verifyOtp(this.email, otp).subscribe(
+    (res: any) => {
+      this.loading = false;
+      if (res.success) {
+        // ✅ Save JWT token in localStorage
+        localStorage.setItem('token', res.token);
+
+        // Optionally store user info too
+        localStorage.setItem('user', JSON.stringify(res.user));
+
+        this.showMessage('✅ OTP Verified Successfully!', true);
+
+        // Redirect after short delay
+        setTimeout(() => this.router.navigate(['/dashboard']), 1000);
+      } else {
+        this.showMessage('❌ Invalid OTP. Please try again.', false);
+      }
+    },
+    (error) => {
+      this.loading = false;
+      this.showMessage('❌ Error verifying OTP. Please try again.', false);
+      console.error(error);
+    }
+  );
+}
+
 
   private showMessage(msg: string, success: boolean) {
     this.message = msg;

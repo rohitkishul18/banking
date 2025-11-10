@@ -11,6 +11,27 @@
   transition: all 0.3s ease;
   box-shadow: 2px 0 6px rgba(0, 0, 0, 0.3);
 
+  &.collapsed {
+    width: 70px; // smaller width when collapsed
+
+    .sidebar-header h3 {
+      font-size: 0;
+    }
+
+    .sidebar-nav ul li {
+      justify-content: center;
+      padding: 14px 0;
+
+      span {
+        display: none; // hide text
+      }
+
+      i {
+        font-size: 1.3rem;
+      }
+    }
+  }
+
   .sidebar-header {
     text-align: center;
     padding: 1.5rem 1rem;
@@ -20,41 +41,57 @@
     background: linear-gradient(90deg, #1f1f2e, #252537);
   }
 
-  .sidebar-nav {
-    flex: 1;
-    ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
+  .sidebar-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 
-      li {
-        padding: 14px 20px;
-        font-size: 1rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #bdbdbd;
-        border-left: 4px solid transparent;
-        transition: all 0.3s ease;
+    li {
+      padding: 14px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #bdbdbd;
+      border-left: 4px solid transparent;
+      transition: all 0.3s ease;
 
-        i {
-          width: 20px;
-          text-align: center;
-          font-size: 1.1rem;
-        }
+      &:hover {
+        background: #1f1f2e;
+        color: #fff;
+      }
 
-        &:hover {
-          background: #1f1f2e;
-          color: #fff;
-        }
-
-        &.active {
-          background: #1f1f2e;
-          color: #fff;
-          border-left: 4px solid #4f9eff;
-        }
+      &.active {
+        background: #1f1f2e;
+        color: #fff;
+        border-left: 4px solid #4f9eff;
       }
     }
   }
+}
+
+.toggle-btn {
+  position: fixed;
+  top: 15px;
+  left: 240px;
+  background: #1f1f2e;
+  border: none;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #4f9eff;
+  }
+
+  i {
+    font-size: 1.2rem;
+  }
+}
+
+.sidebar.collapsed + .toggle-btn {
+  left: 80px;
 }

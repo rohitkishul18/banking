@@ -1,6 +1,6 @@
 <header class="navbar">
   <div class="navbar-left">
-    <h2 class="app-title">Banking Dashboard</h2>
+    <h2 class="app-title">🏦 Banking Dashboard</h2>
   </div>
 
   <div class="navbar-right">
@@ -10,8 +10,20 @@
         alt="Profile"
         class="profile-img"
       />
-      <span class="username">Admin</span>
+      <span class="username">{{ userName }}</span>
     </div>
-    <button class="logout-btn" (click)="logout()">Logout</button>
+    <button class="logout-btn" (click)="openLogoutModal()">Logout</button>
   </div>
 </header>
+
+<!-- Logout confirmation modal -->
+<div class="modal-backdrop" *ngIf="showLogoutModal">
+  <div class="modal">
+    <h3>Confirm Logout !!!!</h3>
+    <p>Are you sure you want to logout?</p>
+    <div class="buttons">
+      <button class="btn btn-danger" (click)="confirmLogout()">Yes, Logout</button>
+      <button class="btn btn-secondary" (click)="closeLogoutModal()">Cancel</button>
+    </div>
+  </div>
+</div>

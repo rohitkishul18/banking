@@ -9,6 +9,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { UserComponent } from './pages/user/user.component';
 import { AccountComponent } from './pages/account/account.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { TransactionComponent } from './pages/transaction/transaction.component'
   ],
   imports: [
     CommonModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    HttpClientModule
   ]
 })
 export class DashboardModule { }
