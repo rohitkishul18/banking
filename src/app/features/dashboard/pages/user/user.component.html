@@ -4,6 +4,7 @@
     User Management
   </h2>
 
+  <!-- Summary Cards -->
   <div class="user-summary">
     <div class="card gradient-blue">
       <h4>Total Users</h4>
@@ -19,7 +20,8 @@
     </div>
   </div>
 
-  <div class="user-table-box">
+  <!-- Users Table -->
+  <div class="user-table-box" *ngIf="users.length > 0; else noData">
     <table class="user-table table table-dark table-hover">
       <thead>
         <tr>
@@ -34,7 +36,7 @@
       <tbody>
         <tr *ngFor="let user of users">
           <td>
-            <img [src]="user.image" alt="User Image" class="profile-img" />
+            <img [src]="user.image || 'assets/default-user.png'" alt="User Image" class="profile-img" />
           </td>
           <td>{{ user.name }}</td>
           <td>{{ user.email }}</td>
@@ -45,11 +47,69 @@
             </span>
           </td>
           <td class="text-center">
-            <button class="btn btn-sm btn-primary me-2">Edit</button>
-            <button class="btn btn-sm btn-danger">Delete</button>
+            <button class="btn btn-sm btn-primary me-2" (click)="openEditModal(user)">
+              <i class="fas fa-edit"></i> Edit
+            </button> &nbsp;&nbsp;&nbsp;
+            <button class="btn btn-sm btn-danger" (click)="openDeleteModal(user)">
+              <i class="fas fa-trash-alt"></i> Delete
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <ng-template #noData>
+    <p class="no-data">No users found.</p>
+  </ng-template>
+</div>
+
+<!-- 🟦 Edit Modal -->
+<div class="modal-overlay" *ngIf="isEditModalOpen">
+  <div class="modal-box animate-modal">
+    <h3>Edit User</h3>
+
+    <form [formGroup]="editUserForm" (ngSubmit)="updateUser()">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" formControlName="name" class="form-control" placeholder="Enter name" />
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" formControlName="email" class="form-control" readonly />
+      </div>
+
+      <div class="form-group">
+        <label>Role</label>
+        <input type="text" formControlName="role" class="form-control" placeholder="Enter role" />
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <select formControlName="active" class="form-select">
+          <option [value]="true">Active</option>
+          <option [value]="false">Inactive</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="closeEditModal()">Cancel</button>
+        <button type="submit" class="btn btn-success">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 🟥 Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="isDeleteModalOpen">
+  <div class="modal-box animate-modal delete-modal">
+    <h3>Delete Confirmation</h3>
+    <p>Are you sure you want to delete <strong>{{ selectedUser?.name }}</strong>?</p>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+    </div>
   </div>
 </div>

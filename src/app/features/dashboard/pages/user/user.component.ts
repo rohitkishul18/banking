@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { BankUserService } from '../../services/bank-user.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 interface User {
+  _id?: string;
   image: string;
   name: string;
   email: string;
@@ -14,62 +17,87 @@ interface User {
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
-
   users: User[] = [];
-  activeUserCount: number = 250;
-  inactiveUserCount: number = 150;
+  activeUserCount = 0;
+  inactiveUserCount = 0;
+
+  editUserForm!: FormGroup;
+  isEditModalOpen = false;
+  isDeleteModalOpen = false;
+  selectedUser: User | null = null;
+
+  constructor(private BankUserService: BankUserService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    // Dummy user data
-    this.users = [
-      {
-        image: 'https://randomuser.me/api/portraits/men/1.jpg',
-        name: 'Rohit Sharma',
-        email: 'rohit.sharma@example.com',
-        role: 'Admin',
-        active: true
-      },
-      {
-        image: 'https://randomuser.me/api/portraits/women/2.jpg',
-        name: 'Priya Mehta',
-        email: 'priya.mehta@example.com',
-        role: 'User',
-        active: false
-      },
-      {
-        image: 'https://randomuser.me/api/portraits/men/3.jpg',
-        name: 'Amit Patel',
-        email: 'amit.patel@example.com',
-        role: 'Manager',
-        active: true
-      },
-      {
-        image: 'https://randomuser.me/api/portraits/women/4.jpg',
-        name: 'Sneha Reddy',
-        email: 'sneha.reddy@example.com',
-        role: 'User',
-        active: true
-      },
-      {
-        image: 'https://randomuser.me/api/portraits/men/5.jpg',
-        name: 'Vikram Singh',
-        email: 'vikram.singh@example.com',
-        role: 'Support',
-        active: false
-      }
-    ];
+    this.fetchUsers();
+
+    this.editUserForm = this.fb.group({
+      name: ['', Validators.required],
+      email: [{ value: '', disabled: true }],
+      role: ['', Validators.required],
+      active: [true, Validators.required],
+    });
   }
 
-  editUser(user: User) {
-    console.log('Editing user:', user);
-    // You can open modal or navigate to edit page here
+  fetchUsers() {
+    this.BankUserService.getBankUser().subscribe({
+      next: (data: any) => {
+        this.users = data.data;
+        this.activeUserCount = this.users.filter(u => u.active).length;
+        this.inactiveUserCount = this.users.filter(u => !u.active).length;
+      },
+      error: (err:any) => console.error('❌ Error fetching user data:', err),
+    });
   }
 
-  deleteUser(user: User) {
-    const confirmDelete = confirm(`Are you sure you want to delete ${user.name}?`);
-    if (confirmDelete) {
-      this.users = this.users.filter(u => u !== user);
-      console.log('Deleted user:', user);
-    }
+  // --- Edit Modal ---
+  openEditModal(user: User) {
+    this.selectedUser = user;
+    this.editUserForm.patchValue({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      active: user.active,
+    });
+    this.isEditModalOpen = true;
+  }
+
+  closeEditModal() {
+    this.isEditModalOpen = false;
+  }
+
+  updateUser() {
+    if (!this.selectedUser) return;
+    const updatedData = this.editUserForm.getRawValue();
+
+    this.BankUserService.updateBankUser(this.selectedUser._id!, updatedData).subscribe({
+      next: () => {
+        this.fetchUsers();
+        this.closeEditModal();
+      },
+      error: err => console.error('❌ Error updating user:', err),
+    });
+  }
+
+  // --- Delete Modal ---
+  openDeleteModal(user: User) {
+    this.selectedUser = user;
+    this.isDeleteModalOpen = true;
+  }
+
+  closeDeleteModal() {
+    this.isDeleteModalOpen = false;
+  }
+
+  confirmDelete() {
+    if (!this.selectedUser) return;
+
+    this.BankUserService.deleteBankUser(this.selectedUser._id!).subscribe({
+      next: () => {
+        this.fetchUsers();
+        this.closeDeleteModal();
+      },
+      error: (err:any) => console.error('❌ Error deleting user:', err),
+    });
   }
 }

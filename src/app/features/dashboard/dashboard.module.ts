@@ -10,6 +10,7 @@ import { UserComponent } from './pages/user/user.component';
 import { AccountComponent } from './pages/account/account.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -25,7 +26,9 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class DashboardModule { }
