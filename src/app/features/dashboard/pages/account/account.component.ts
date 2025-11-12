@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from '../../services/account.service';
 
 @Component({
   selector: 'app-account',
@@ -7,36 +8,31 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AccountComponent implements OnInit {
 
-  accounts = [
-    {
-      accountNumber: '100124598745',
-      holderName: 'Rohit Kishul',
-      type: 'Savings',
-      balance: 125000.45,
-      active: true
-    },
-    {
-      accountNumber: '100198765432',
-      holderName: 'Krishna Patel',
-      type: 'Current',
-      balance: 560000.00,
-      active: true
-    },
-    {
-      accountNumber: '100176543218',
-      holderName: 'Anjali Mehta',
-      type: 'Savings',
-      balance: 92000.85,
-      active: false
-    },
-    {
-      accountNumber: '100143289054',
-      holderName: 'Ramesh Sharma',
-      type: 'Fixed Deposit',
-      balance: 450000.00,
-      active: true
-    }
-  ];
+  accounts: any[] = [];
+  loading = true;
+  errorMessage = '';
 
-  ngOnInit(): void {}
+  constructor(private accountService: AccountService) {}
+
+  ngOnInit(): void {
+    this.fetchAccounts();
+  }
+
+  fetchAccounts(): void {
+    this.accountService.getAllAccounts().subscribe({
+      next: (res:any) => {
+        if (res.success) {
+          this.accounts = res.data;
+        } else {
+          this.errorMessage = 'Failed to load accounts';
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching accounts:', err);
+        this.errorMessage = 'Server error while fetching accounts';
+        this.loading = false;
+      }
+    });
+  }
 }

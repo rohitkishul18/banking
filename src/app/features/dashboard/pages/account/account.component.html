@@ -4,8 +4,18 @@
     All Customer Accounts
   </h2>
 
+  <!-- Loader -->
+  <div *ngIf="loading" class="text-center text-light p-3">
+    <i class="fas fa-spinner fa-spin"></i> Loading accounts...
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="!loading && errorMessage" class="alert alert-danger text-center">
+    {{ errorMessage }}
+  </div>
+
   <!-- Account Table -->
-  <table class="account-table table table-dark table-hover">
+  <table *ngIf="!loading && !errorMessage" class="account-table table table-dark table-hover">
     <thead>
       <tr>
         <th>Account No</th>
@@ -13,7 +23,7 @@
         <th>Type</th>
         <th>Balance</th>
         <th>Status</th>
-        <th class="text-center">Actions</th>
+        <!-- <th class="text-center">Actions</th> -->
       </tr>
     </thead>
     <tbody>
@@ -27,11 +37,11 @@
             {{ acc.active ? 'Active' : 'Inactive' }}
           </span>
         </td>
-        <td class="text-center">
+        <!-- <td class="text-center">
           <button class="btn btn-sm btn-primary me-2">View</button>
           <button class="btn btn-sm btn-success me-2">Edit</button>
           <button class="btn btn-sm btn-danger">Delete</button>
-        </td>
+        </td> -->
       </tr>
     </tbody>
   </table>
