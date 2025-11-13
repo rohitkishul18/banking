@@ -1,43 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { TransactionService } from '../../services/transaction.service';
 
 @Component({
   selector: 'app-transaction',
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.scss']
 })
-export class TransactionComponent {
- transactions = [
-    {
-      userName: 'Rohit Kumar',
-      accountNo: 'AC123456',
-      amount: 25000,
-      type: 'Credit',
-      status: 'Completed',
-      date: '2025-11-07 10:30 AM'
-    },
-    {
-      userName: 'Priya Sharma',
-      accountNo: 'AC789012',
-      amount: 15000,
-      type: 'Debit',
-      status: 'Pending',
-      date: '2025-11-07 09:45 AM'
-    },
-    {
-      userName: 'Amit Verma',
-      accountNo: 'AC654321',
-      amount: 12000,
-      type: 'Debit',
-      status: 'Failed',
-      date: '2025-11-06 06:15 PM'
-    },
-    {
-      userName: 'Neha Singh',
-      accountNo: 'AC456987',
-      amount: 50000,
-      type: 'Credit',
-      status: 'Completed',
-      date: '2025-11-05 02:00 PM'
-    }
-  ];
+export class TransactionComponent implements OnInit {
+
+  constructor(private transactionService: TransactionService) { }
+    transactions: any[] = [];
+    loading = true;
+    errorMessage = '';
+  ngOnInit(): void {
+      this.fetchTransactions();
+  }
+
+  fetchTransactions(){
+    this.transactionService.getTransactions().subscribe({
+      next: (res:any) => {
+        if (res.success) {
+          this.transactions = res.data;
+        } else {
+          this.errorMessage = 'Failed to load accounts';
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching accounts:', err);
+        this.errorMessage = 'Server error while fetching accounts';
+        this.loading = false;
+      }
+    });
+  }
 }

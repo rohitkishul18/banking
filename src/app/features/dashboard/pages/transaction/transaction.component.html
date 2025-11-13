@@ -4,6 +4,18 @@
     Transaction History
   </h2>
 
+
+<!-- show error message if not the record fecth  -->
+
+  <div *ngIf="loading" class="text-center text-light p-3">
+    <i class="fas fa-spinner fa-spin"></i> Loading transactions...
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger text-center">
+    {{ errorMessage }}
+  </div>
+
+
   <table class="transaction-table">
     <thead>
       <tr>
